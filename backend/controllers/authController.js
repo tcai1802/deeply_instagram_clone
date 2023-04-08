@@ -66,7 +66,7 @@ const loginView = (req, res) => {
 
 const handleLogin = async (req, res) => {
     const [user_name, password] = Object.values(req.body);
-    console.log(`${username}, ${password}`)
+    console.log(`${user_name}, ${password}`)
     let userDB = await UserModel.findOne({ "user_name": user_name })
     if (userDB) {
         const isSame = await bcrypt.compare(password, userDB.password)
