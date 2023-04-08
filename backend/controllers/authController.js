@@ -66,7 +66,7 @@ const loginView = (req, res) => {
 
 const handleLogin = async (req, res) => {
     const [user_name, password] = Object.values(req.body);
-
+    console.log(`${username}, ${password}`)
     let userDB = await UserModel.findOne({ "user_name": user_name })
     if (userDB) {
         const isSame = await bcrypt.compare(password, userDB.password)
@@ -89,7 +89,8 @@ const handleLogin = async (req, res) => {
     } else {
         res.status(200).json({
             "code": "account_not_found",
-            "message": "Tài khoản không tồn tại"
+            "message": "Tài khoản không tồn tại",
+            "data": userDB
         })
     }
 
