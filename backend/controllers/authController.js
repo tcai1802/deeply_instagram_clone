@@ -65,6 +65,8 @@ const loginView = (req, res) => {
 }
 
 const handleLogin = async (req, res) => {
+
+    console.log("Req", req.body)
     const [user_name, password] = Object.values(req.body);
     console.log(`${user_name}, ${password}`)
     let userDB = await UserModel.findOne({ "user_name": user_name })
