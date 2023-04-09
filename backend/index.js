@@ -5,6 +5,7 @@ const router = express.Router()
 require('dotenv').config()
 const path = require('path')
 const authRoute = require('./routes/authRoute')
+const postRouter = require('./routes/postRoute')
 const { mongoConnect } = require('./connection/mongo_connection')
 
 
@@ -13,6 +14,7 @@ app.use('/static', express.static(path.join(__dirname, 'public')))
 mongoConnect()
 // Route List
 app.use('/auth', authRoute);
+app.use('/posts', postRouter)
 
 app.listen(process.env.PORT || 4000, () => {
     console.log(`Example app listening on port ${process.env.PORT}`)
