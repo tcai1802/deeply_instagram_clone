@@ -4,7 +4,10 @@ const Schema = mongoose.Schema
 const ObjectId = Schema.ObjectId
 
 const postModel = new Schema({
-    post_id: ObjectId,
+    post_id:  {
+        type: ObjectId,
+        auto: true
+    },
     caption: {
         type: String,
         default: ""

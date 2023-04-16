@@ -1,10 +1,15 @@
 const jwt = require('jsonwebtoken')
 const PostModel = require('../models/postModel')
 const mongoose = require('mongoose')
-const handleAddPost = (req, res) => {
+const multer = require('multer')
+const upload = multer({ dest: 'uploads/' })
+const middleware = require('../middleware')
+
+
+const handleAddPost = async (req, res) => {
     const authHeader = req.headers.authorization;
     const token = authHeader.split(" ")[1]
-    jwt.verify(token, process.env.PRIVATE_KEY, function (err, decoded) {
+    jwt.verify(token, process.env.PRIVATE_KEY, async  (err, decoded) => {
         if (err) {
             res.json({
                 "code": "invalid_token",
@@ -12,12 +17,13 @@ const handleAddPost = (req, res) => {
             })
         }
         else {
-            //console.log("Token",decoded)
+            // upload media           
+            const urlList = await middleware.handleUploadMedia(req.files);
             const data = req.body;
             data.user_id = decoded.userDB.user_id.toString()
+            data.media_list = urlList;
             const postModel = PostModel(data)
             postModel.save().then((result) => {
-                console.log('Result', result)
                 res.status(200).json({
                     "code": "successfully",
                     "message": "Create post successfully",
@@ -36,21 +42,84 @@ const handleAddPost = (req, res) => {
     })
 }
 
-const handleEditPost = (req, res) => {
+const handleEditPost = async (req, res) => {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(" ")[1]
+    jwt.verify(token, process.env.PRIVATE_KEY, function (err, decoded) {
+        if (err) {
+            res.json({
+                "code": "invalid_token",
+                "message": "Invalid token"
+            })
+        }
+        else {
+            PostModel.findOneAndUpdate({ "post_id": req.params.id }, req.body).then((result) => {
+                if (result) {
+                    console.log("Data", result)
+                    res.status(200).json({
+                        "code": "successfully",
+                        "message": "Update thành công",
+                        "data": result
+                    })
 
-    res.json({
-        "method": "Edit Post"
+                } else {
+                    res.status(200).json({
+                        "code": "failed",
+                        "message": "Update không thành công",
+                        "data": result
+                    })
+                }
+            }).catch((err) => {
+                res.status(500).json({
+                    "code": "failed",
+                    "message": "Server error",
+                    "data": err
+                })
+            });
+
+
+
+        }
     })
+
 }
 
 const handleDeletePost = (req, res) => {
-    res.json({
-        "method": "Delete Post"
+    console.log("Delete Post======")
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(" ")[1]
+    jwt.verify(token, process.env.PRIVATE_KEY, function (err, decoded) {
+        if (err) {
+            res.json({
+                "code": "invalid_token",
+                "message": "Invalid token"
+            })
+        }
+        else {
+            PostModel.findOneAndDelete({ "post_id": req.params.id }).then((result) => {
+                if (result) {
+                    console.log("Data", result)
+                    res.status(200).json({
+                        "code": "successfully",
+                        "message": "Xóa thành công",
+                        "data": result
+                    })
+
+                }
+            }).catch((err) => {
+                res.status(500).json({
+                    "code": "failed",
+                    "message": "Server error",
+                    "data": err
+                })
+            });;
+        }
     })
 }
+
 
 module.exports = {
     handleAddPost,
     handleEditPost,
-    handleDeletePost
+    handleDeletePost,
 }
