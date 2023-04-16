@@ -18,9 +18,26 @@ const handleAddPost = async (req, res) => {
         }
         else {
             // upload media   
-            const url_list = []        
             try {
-                urlList = await middleware.handleUploadMedia(req.files);
+                const urlList = await middleware.handleUploadMedia(req.files);
+                const data = req.body;
+                data.user_id = decoded.userDB.user_id.toString()
+                data.media_list = urlList;
+                const postModel = PostModel(data)
+                postModel.save().then((result) => {
+                    res.status(200).json({
+                        "code": "successfully",
+                        "message": "Create post successfully",
+                        "data": result
+                    })
+                }).catch((err) => {
+                    console.log("Error", err)
+                    res.status(500).json({
+                        "code": "failed",
+                        "message": err,
+                        "data": null
+                    })
+                });
             } catch (error) {
                 res.status(500).json({
                     "code": "failed",
@@ -28,24 +45,7 @@ const handleAddPost = async (req, res) => {
                     "data": null
                 })
             }
-            const data = req.body;
-            data.user_id = decoded.userDB.user_id.toString()
-            data.media_list = urlList;
-            const postModel = PostModel(data)
-            postModel.save().then((result) => {
-                res.status(200).json({
-                    "code": "successfully",
-                    "message": "Create post successfully",
-                    "data": result
-                })
-            }).catch((err) => {
-                console.log("Error", err)
-                res.status(500).json({
-                    "code": "failed",
-                    "message": err,
-                    "data": null
-                })
-            });
+
 
         }
     })
