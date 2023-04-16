@@ -11,7 +11,7 @@ const handleUploadMedia = async (fileList) => {
     } catch (error) {
         res.status(500).json({
             "code": "failed",
-            "message": err,
+            "message": error,
             "data": null
         })
     }
