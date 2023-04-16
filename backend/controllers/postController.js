@@ -17,8 +17,17 @@ const handleAddPost = async (req, res) => {
             })
         }
         else {
-            // upload media           
-            const urlList = await middleware.handleUploadMedia(req.files);
+            // upload media   
+            const url_list = []        
+            try {
+                urlList = await middleware.handleUploadMedia(req.files);
+            } catch (error) {
+                res.status(500).json({
+                    "code": "failed",
+                    "message": err,
+                    "data": null
+                })
+            }
             const data = req.body;
             data.user_id = decoded.userDB.user_id.toString()
             data.media_list = urlList;
