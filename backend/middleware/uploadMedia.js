@@ -1,6 +1,6 @@
 const cloudinary = require('cloudinary').v2;
 
-const handleUploadMedia = async (fileList) => {
+const handleUploadMedia = async (fileList, res) => {
     const url_list= []
     try {
         for(index in fileList) {

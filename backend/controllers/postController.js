@@ -19,7 +19,7 @@ const handleAddPost = async (req, res) => {
         else {
             // upload media   
             try {
-                const urlList = await middleware.handleUploadMedia(req.files);
+                const urlList = await middleware.handleUploadMedia(req.files, res);
                 const data = req.body;
                 data.user_id = decoded.userDB.user_id.toString()
                 data.media_list = urlList;
