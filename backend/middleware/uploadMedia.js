@@ -5,7 +5,14 @@ const handleUploadMedia = async (fileList) => {
     try {
         for(index in fileList) {
             await cloudinary.uploader.upload(fileList[index].path, {upload_preset: "ml_default",}, (error, result)=>{
-                url_list.push(result.url)
+                if(error) {
+                    res.json({
+                        "code": "invalid_token",
+                        "message": error
+                    })        
+                }else {
+                    url_list.push(result.url)
+                }
             });
         }  
     } catch (error) {
