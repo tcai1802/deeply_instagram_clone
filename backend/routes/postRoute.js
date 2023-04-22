@@ -1,6 +1,6 @@
 const express = require('express')
 const postRouter = express.Router()
-const { handleAddPost, handleEditPost, handleDeletePost } = require('../controllers/postController')
+const { handleAddPost, handleEditPost, handleDeletePost, handleShowAllPosts} = require('../controllers/postController')
 const multer  = require('multer')
 const upload = multer({ dest: 'uploads/' })
 
@@ -19,6 +19,7 @@ postRouter.use((req, res, next) => {
 })
 
 postRouter.post("/add_post", upload.array('photos', 12),  handleAddPost)
+postRouter.get("/all_posts", handleShowAllPosts)
 postRouter.put("/:id", handleEditPost)
 postRouter.delete("/:id", handleDeletePost)
 

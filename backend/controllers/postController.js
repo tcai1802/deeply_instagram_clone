@@ -3,7 +3,42 @@ const PostModel = require('../models/postModel')
 const mongoose = require('mongoose')
 const multer = require('multer')
 const upload = multer({ dest: 'uploads/' })
-const middleware = require('../middleware')
+const {handleUploadMedia} = require('../middleware')
+
+
+
+const handleShowAllPosts = async (req, res) => {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(" ")[1]
+    jwt.verify(token, process.env.PRIVATE_KEY, async (err, decoded) => {
+        if (err) {
+            res.json({
+                "code": "invalid_token",
+                "message": "Invalid token"
+            })
+        }
+        else {
+            // upload media   
+            try {
+                const result  = await PostModel.find()
+                res.status(500).json({
+                    "code": "successfully",
+                    "message": "OK",
+                    "data": result
+                })
+            } catch (error) {
+                res.status(500).json({
+                    "code": "failed",
+                    "message": error,
+                    "data": null
+                })
+            }
+
+
+        }
+    })
+}
+
 
 
 const handleAddPost = async (req, res) => {
@@ -19,7 +54,7 @@ const handleAddPost = async (req, res) => {
         else {
             // upload media   
             try {
-                const urlList = await middleware.handleUploadMedia(req.files, res);
+                const urlList = await handleUploadMedia(req.files, res);
                 const data = req.body;
                 data.user_id = decoded.userDB.user_id.toString()
                 data.media_list = urlList;
@@ -31,7 +66,7 @@ const handleAddPost = async (req, res) => {
                         "data": result
                     })
                 }).catch((err) => {
-                    console.log("Error", err)
+                    //console.log("Error", err)
                     res.status(500).json({
                         "code": "failed",
                         "message": err,
@@ -131,4 +166,5 @@ module.exports = {
     handleAddPost,
     handleEditPost,
     handleDeletePost,
+    handleShowAllPosts,
 }
