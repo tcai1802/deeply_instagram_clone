@@ -21,13 +21,13 @@ const handleShowAllPosts = async (req, res) => {
             // upload media   
             try {
                 const result  = await PostModel.find()
-                res.status(500).json({
+                res.status(200).json({
                     "code": "successfully",
                     "message": "OK",
                     "data": result
                 })
             } catch (error) {
-                res.status(500).json({
+                res.status(401).json({
                     "code": "failed",
                     "message": error,
                     "data": null
