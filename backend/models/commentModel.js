@@ -3,25 +3,22 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const ObjectId = Schema.ObjectId
 
-const userSchema = new Schema({
-    user_id: {
+const commentSchema = new Schema({
+    comment_id: {
         type: ObjectId,
         auto: true
     },
-    user_name: {
+    user_id: {
         type:String,
         required: true
     },
-    full_name: {
+    parent_id: {
         type:String,
     },
-    user_name: {
-        type:String,
+    parent: {
+        type: Boolean,
     },
-    password: {
-        type:String,
-    },
-    avatar_url: {
+    target_id: {
         type: String,
         default: ""
     },
@@ -37,6 +34,6 @@ const userSchema = new Schema({
     },
 })
 
-const UserModel = mongoose.model('users', userSchema)
+const CommentModel = mongoose.model('comments', commentSchema)
 
-module.exports = UserModel
+module.exports = CommentModel

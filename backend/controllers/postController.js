@@ -121,15 +121,13 @@ const handleEditPost = async (req, res) => {
                 })
             });
 
-
-
         }
     })
 
 }
 
 const handleDeletePost = (req, res) => {
-    console.log("Delete Post======")
+    //console.log("Delete Post======")
     const authHeader = req.headers.authorization;
     const token = authHeader.split(" ")[1]
     jwt.verify(token, process.env.PRIVATE_KEY, function (err, decoded) {
@@ -157,6 +155,45 @@ const handleDeletePost = (req, res) => {
                     "data": err
                 })
             });;
+        }
+    })
+}
+
+const handleLikeOrNotPost = async (req, res) => {
+    const authHeader = req.headers.authorization;
+    const token = authHeader.split(" ")[1]
+    jwt.verify(token, process.env.PRIVATE_KEY, function (err, decoded) {
+        if (err) {
+            res.json({
+                "code": "invalid_token",
+                "message": "Invalid token"
+            })
+        }
+        else {
+            PostModel.findOneAndUpdate({ "post_id": req.params.id }, req.body).then((result) => {
+                if (result) {
+                    console.log("Data", result)
+                    res.status(200).json({
+                        "code": "successfully",
+                        "message": "Update thành công",
+                        "data": result
+                    })
+
+                } else {
+                    res.status(200).json({
+                        "code": "failed",
+                        "message": "Update không thành công",
+                        "data": result
+                    })
+                }
+            }).catch((err) => {
+                res.status(500).json({
+                    "code": "failed",
+                    "message": "Server error",
+                    "data": err
+                })
+            });
+
         }
     })
 }

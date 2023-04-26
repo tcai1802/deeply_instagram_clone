@@ -8,29 +8,17 @@ const postModel = new Schema({
         type: ObjectId,
         auto: true
     },
-    caption: {
-        type: String,
-        default: ""
-    },
-    tags: {
-        type: Array,
-        default: [],
-    },
     user_id: {
         type: String,
         require: true, 
         index:true,
     },
-    total_likes: {
-        type: Number,
-        default: 0,
-    },
-    total_comments: {
-        type: Number,
-        default: 0,
+    caption: {
+        type: String,
+        default: ""
     },
     media_list: {
-        type: Array,
+        type: [String],
         default: [],
     },
     created_at: {
