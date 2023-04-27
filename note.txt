@@ -1,0 +1,10 @@
+Đăng nhập, đăng ký
+Post: Create, edit, delete, like , comment, share
+Story
++ Create
++ Delete
++ Comment 
++ Like 
+Chat: 1vs1
+Notification
+User: Edit, logout, remove account, follow, unfollow

@@ -31,6 +31,7 @@ const commentSchema = new Schema({
     },
     updated_at: {
         type: Date,
+        auto: true
     },
 })
 

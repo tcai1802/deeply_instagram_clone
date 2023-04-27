@@ -14,26 +14,27 @@ const userSchema = new Schema({
     },
     full_name: {
         type:String,
-    },
-    user_name: {
-        type:String,
+        default: ""
     },
     password: {
         type:String,
+        required: true
     },
     avatar_url: {
         type: String,
-        default: ""
+        default: null
     },
     token: {
         type: String,
-        default: ""
+        default: null
     },
     created_at: {
         type: Date,
+        default: Date.now,
     },
     updated_at: {
         type: Date,
+        default: null
     },
 })
 

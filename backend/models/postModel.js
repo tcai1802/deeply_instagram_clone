@@ -11,7 +11,6 @@ const postModel = new Schema({
     user_id: {
         type: String,
         require: true, 
-        index:true,
     },
     caption: {
         type: String,
@@ -27,7 +26,7 @@ const postModel = new Schema({
     },
     updated_at: {
         type: Date,
-        default: ""
+        default: null
     },
 })
 

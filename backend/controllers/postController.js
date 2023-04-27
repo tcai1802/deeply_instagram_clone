@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const PostModel = require('../models/postModel')
+const {PostModel, FavoriteModel} = require('../models')
 const mongoose = require('mongoose')
 const multer = require('multer')
 const upload = multer({ dest: 'uploads/' })
@@ -52,10 +52,9 @@ const handleAddPost = async (req, res) => {
             })
         }
         else {
-            // upload media   
             try {
-                const urlList = await handleUploadMedia(req.files, res);
                 const data = req.body;
+                const urlList = await handleUploadMedia(req.files)
                 data.user_id = decoded.userDB.user_id.toString()
                 data.media_list = urlList;
                 const postModel = PostModel(data)
@@ -67,7 +66,7 @@ const handleAddPost = async (req, res) => {
                     })
                 }).catch((err) => {
                     //console.log("Error", err)
-                    res.status(500).json({
+                    res.status(200).json({
                         "code": "failed",
                         "message": err,
                         "data": null
@@ -75,8 +74,8 @@ const handleAddPost = async (req, res) => {
                 });
             } catch (error) {
                 res.status(500).json({
-                    "code": "failed",
-                    "message": err,
+                    "code": "server_error",
+                    "message": error,
                     "data": null
                 })
             }
@@ -89,6 +88,7 @@ const handleAddPost = async (req, res) => {
 const handleEditPost = async (req, res) => {
     const authHeader = req.headers.authorization;
     const token = authHeader.split(" ")[1]
+    //console.log("Data", bodyNew)
     jwt.verify(token, process.env.PRIVATE_KEY, function (err, decoded) {
         if (err) {
             res.json({
@@ -97,7 +97,7 @@ const handleEditPost = async (req, res) => {
             })
         }
         else {
-            PostModel.findOneAndUpdate({ "post_id": req.params.id }, req.body).then((result) => {
+            PostModel.findOneAndUpdate({ "post_id": req.params.id }, {...req.body, "updated_at": Date.now()}).then((result) => {
                 if (result) {
                     console.log("Data", result)
                     res.status(200).json({
@@ -170,29 +170,59 @@ const handleLikeOrNotPost = async (req, res) => {
             })
         }
         else {
-            PostModel.findOneAndUpdate({ "post_id": req.params.id }, req.body).then((result) => {
-                if (result) {
-                    console.log("Data", result)
-                    res.status(200).json({
-                        "code": "successfully",
-                        "message": "Update thành công",
-                        "data": result
-                    })
-
-                } else {
-                    res.status(200).json({
+            if(req.body.user_id) {
+                FavoriteModel.findOne({ "target_id": req.params.id, "user_id": req.body.user_id }).then((result) => {
+                    if (result) {
+                        console.log("Data", result)
+                        FavoriteModel.findOneAndDelete({ "target_id": req.params.id, "user_id": req.body.user_id }).then((result) => {
+                            res.status(200).json({
+                                "code": "successfully",
+                                "message": "Liked",
+                                "data": result
+                            })
+                        }).catch((err) => {
+                            res.status(500).json({
+                                "code": "failed",
+                                "message": "Failed",
+                            })
+                        });
+                        
+    
+                    } else {
+                        const model = FavoriteModel({
+                            user_id: req.body.user_id,
+                                target_id: req.params.id,
+                        })
+                        model.save().then((result) => {
+                            res.status(200).json({
+                                "code": "successfully",
+                                "message": "Update thành công",
+                                "data": result
+                            })
+                        }).catch((err) => {
+                            //console.log("Error", err)
+                            res.status(500).json({
+                                "code": "failed",
+                                "message": err,
+                                "data": null
+                            })
+                        });
+                    }
+                }).catch((err) => {
+                    res.status(500).json({
                         "code": "failed",
-                        "message": "Update không thành công",
-                        "data": result
+                        "message": "Server error",
+                        "data": err
                     })
-                }
-            }).catch((err) => {
-                res.status(500).json({
+                });
+            }else {
+                res.status(200).json({
                     "code": "failed",
-                    "message": "Server error",
-                    "data": err
+                    "message": "Update không thành công",
+                    "data": null
                 })
-            });
+            }
+            
 
         }
     })
@@ -204,4 +234,5 @@ module.exports = {
     handleEditPost,
     handleDeletePost,
     handleShowAllPosts,
+    handleLikeOrNotPost,
 }

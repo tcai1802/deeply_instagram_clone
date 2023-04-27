@@ -5,7 +5,6 @@ const bcrypt = require('bcrypt')
 // Register
 const registerView = (req, res) => {
     const [email, password] = Object.values(req.body);
-
     if (validateEmailRegex.test(email)) {
         // handle to save account to server 
         res.status(200).json({
@@ -33,10 +32,8 @@ const handleSignUp = async (req, res) => {
                     const user = UserModel({
                         user_name: user_name,
                         password: hashPass,
+                        full_name: user_name,
                     })
-                    // generate jwt 
-                    var token = jwt.sign({user}, process.env.PRIVATE_KEY)
-
                     user.save().then((value) => {
                         if (value) {
                             res.status(200).json({
@@ -65,10 +62,9 @@ const loginView = (req, res) => {
 }
 
 const handleLogin = async (req, res) => {
-
-    console.log("Req", req.body)
+    //console.log("Req", req.body)
     const [user_name, password] = Object.values(req.body);
-    console.log(`${user_name}, ${password}`)
+    //console.log(`${user_name}, ${password}`)
     let userDB = await UserModel.findOne({ "user_name": user_name })
     if (userDB) {
         const isSame = await bcrypt.compare(password, userDB.password)
@@ -76,7 +72,7 @@ const handleLogin = async (req, res) => {
         if (isSame) {
             var token = jwt.sign({userDB}, process.env.PRIVATE_KEY)
             //console.log("id", userDB._id)
-            const data = await UserModel.findOneAndUpdate({"user_id": userDB.user_id}, {"token": token})
+            await UserModel.findOneAndUpdate({user_id: userDB.user_id}, {"token": token})
             res.status(200).json({
                 "code": "successfully",
                 "message": "Đăng nhập thành công",
@@ -92,7 +88,7 @@ const handleLogin = async (req, res) => {
         res.status(200).json({
             "code": "account_not_found",
             "message": "Tài khoản không tồn tại",
-            "data": userDB
+            "data": null
         })
     }
 
