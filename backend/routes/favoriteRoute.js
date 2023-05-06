@@ -1,13 +1,13 @@
 const express = require('express')
-const commentRoute = express.Router()
+const favoriteRoute = express.Router()
 const User = require('../config/firebase.config')
 const {addDoc} = require('firebase/firestore') 
 const {getMessaging, getToken} =  require('firebase/messaging')
 const FCM = require('fcm-node')
-const {commentController} = require('../controllers')
+const {favoriteController} = require('../controllers')
 
 const fcm = new FCM(process.env.SERVER_KEY)
-commentRoute.use((req, res, next) => {
+favoriteRoute.use((req, res, next) => {
     // Post middleware
     //const authHeader = req.headers.authorization;
     //if (authHeader) {
@@ -21,8 +21,8 @@ commentRoute.use((req, res, next) => {
     //}
     next()
 })
-commentRoute.get("/:id",commentController.handleShowComment)
+favoriteRoute.get("/:id",favoriteController.handleShowFavorite)
 
-commentRoute.post("/:id",commentController.handleAddComment)
+favoriteRoute.post("/:id",favoriteController.handleFavoriteOrNot)
 
-module.exports = commentRoute;
+module.exports = favoriteRoute;

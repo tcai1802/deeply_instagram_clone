@@ -22,12 +22,9 @@ const commentSchema = new Schema({
         type: String,
         default: ""
     },
-    token: {
-        type: String,
-        default: ""
-    },
     created_at: {
         type: Date,
+        default: Date.now
     },
     updated_at: {
         type: Date,

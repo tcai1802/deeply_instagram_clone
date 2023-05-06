@@ -1,7 +1,11 @@
 const { validateEmailRegex } = require("../constants/regex");
 const UserModel = require('../models/userModel')
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
+const db = require('../config/firebase.config')
+const { addDoc, collection } = require('firebase/firestore');
+
+
 // Register
 const registerView = (req, res) => {
     const [email, password] = Object.values(req.body);
@@ -34,6 +38,12 @@ const handleSignUp = async (req, res) => {
                         password: hashPass,
                         full_name: user_name,
                     })
+                     addDoc(collection(db, "users"), {
+                        "user_id": user.user_id.toString(),
+                        "followers": [],
+                        "following": [],
+                     }),
+
                     user.save().then((value) => {
                         if (value) {
                             res.status(200).json({

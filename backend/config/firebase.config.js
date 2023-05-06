@@ -1,7 +1,6 @@
 
 const { initializeApp } = require('firebase/app');
-const {getFirestore, collection} = require('firebase/firestore');
-const  {getMessaging} =  require('firebase/messaging');
+const {getFirestore} = require('firebase/firestore');
 
 const firebaseConfig = {
   apiKey: "AIzaSyCZZ9ys77HQj-peRZLG5CPihHj0lL5U2WA",
@@ -24,5 +23,5 @@ const db = getFirestore(app)
 
 
 
-const User = collection(db, "Users")
-module.exports = User;
+//const User = collection(db, "Users")
+module.exports = db;
