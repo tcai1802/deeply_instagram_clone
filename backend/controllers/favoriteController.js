@@ -16,7 +16,7 @@ const handleFavoriteOrNot = async (req, res, next) => {
         }
         else {
             //console.log("Data", favoriteSnapshot.empty)
-            await updateDoc(collection(db, "favorites"), req.body)
+            await addDoc(collection(db, "favorites"), req.body)
         }
         res.json({ 
             "code": "successfully",
