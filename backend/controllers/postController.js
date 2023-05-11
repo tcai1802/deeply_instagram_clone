@@ -55,7 +55,7 @@ const handleAddPost = async (req, res) => {
             try {
                 const data = req.body;
                 const urlList = await handleUploadMedia(req.files)
-                data.user_id = decoded.userDB.user_id.toString()
+                data.user_id = decoded.user_id.toString()
                 data.media_list = urlList;
                 const postModel = PostModel(data)
                 postModel.save().then((result) => {

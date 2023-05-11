@@ -6,7 +6,7 @@ const db = require('../config/firebase.config')
 
 
 const handleShowUserInfo = async (req, res) => {
-    const userId = req.body.user_id;
+    const userId = req.params.id;
     //console.log("===",userId);
 
     if (!userId) {

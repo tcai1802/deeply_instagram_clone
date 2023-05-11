@@ -80,7 +80,7 @@ const handleLogin = async (req, res) => {
         const isSame = await bcrypt.compare(password, userDB.password)
 
         if (isSame) {
-            var token = jwt.sign({userDB}, process.env.PRIVATE_KEY)
+            var token = jwt.sign({"user_id": userDB.user_id}, process.env.PRIVATE_KEY)
             //console.log("id", userDB._id)
             await UserModel.findOneAndUpdate({user_id: userDB.user_id}, {"token": token})
             res.status(200).json({
